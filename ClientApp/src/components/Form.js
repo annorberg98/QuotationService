@@ -23,6 +23,7 @@ export class Form extends Component {
         this.createCheckbox = this.createCheckbox.bind(this);
         this.createCheckboxlist = this.createCheckboxlist.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
+        this.surfaceChange = this.surfaceChange.bind(this);
     }
 
     handleCheckboxChange = changeEvent => {
@@ -55,6 +56,10 @@ export class Form extends Component {
         this.setState({ city: event.target.value });
 
         this.populatePriceData(event.target.value);
+    }
+
+    surfaceChange(event) {
+        this.setState({ surface: event.target.value });
     }
 
     async populatePriceData(city) {
@@ -95,6 +100,7 @@ export class Form extends Component {
         event.preventDefault();
 
         let city = this.state.city;
+        let surface = this.state.surface;
         let selectedOptions = [];
 
         Object.keys(this.state.checkboxes)
@@ -103,15 +109,18 @@ export class Form extends Component {
                 selectedOptions.push(checkbox);
             });
 
-        this.RequestQuotation(city, selectedOptions);
+        this.RequestQuotation(city, selectedOptions, surface);
     }
 
-    async RequestQuotation(city, selectedOptions) {
+    async RequestQuotation(city, selectedOptions, surface) {
         const params = new URLSearchParams();
         params.append('city', city);
-        params.append('options', selectedOptions);
+        params.append('surface', surface);
+        params.append('options', JSON.stringify(selectedOptions));
 
-        await axios.get('/offer', { params: params }).then(result => {
+        await axios.get('/offer', {
+            params: params
+        }).then(result => {
             console.log(result.data);
         });
     }
@@ -150,6 +159,9 @@ export class Form extends Component {
                             <option value="Stockholm">Stockholm</option>
                             <option value="Uppsala">Uppsala</option>
                         </select>
+                    </p>
+                    <p><label>Surface to clean: </label>
+                        <input type="text" value={this.state.surface} onChange={this.surfaceChange} />
                     </p>
                     <p><label>Select options: </label></p>
                     {this.createCheckboxlist()}

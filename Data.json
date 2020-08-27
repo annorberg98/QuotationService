@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "Stockholm",
+    "UnitPrice": 65,
+    "Options": {
+      "Fönsterputs": 300,
+      "Balkongstädning": 150
+    }
+  },
+  {
+    "Name": "Uppsala",
+    "UnitPrice": 55,
+    "Options": {
+      "Fönsterputs": 300,
+      "Balkongstädning": 150,
+      "Bortforsling av skräp":  400
+    }
+  }
+]
