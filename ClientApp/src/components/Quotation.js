@@ -3,16 +3,13 @@ import React from 'react';
 export class Quotation extends React.Component {
     static displayName = "Quotation";
 
-    constructor(props) {
-        super(props);
-        this.state = {
-            offer: {}
-        }
-    }
 
     render() {
         return (
-            <h1>Quotation</h1>
+            <div>
+                <h1>Quotation</h1>
+                <h2>Selected City: <em>{this.props.qoute.city}</em></h2>
+            </div>
         );
     }
 }

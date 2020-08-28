@@ -13,9 +13,9 @@ export class Form extends Component {
             surface: "",
             unitPrice: null,
             isLoading: false,
-            error: null,
+            error: 0,
             dataRecieved: false,
-            checkboxes: []
+            checkboxes: [],
         };
 
         this.cityChange = this.cityChange.bind(this);
@@ -59,6 +59,11 @@ export class Form extends Component {
     }
 
     surfaceChange(event) {
+        if (Number(event.target.value)) {
+            this.setState(prevState => ({
+                error: prevState.error + 1
+            }));
+        }
         this.setState({ surface: event.target.value });
     }
 
@@ -99,6 +104,10 @@ export class Form extends Component {
     async onFormSubmit(event) {
         event.preventDefault();
 
+        if (this.state.error < 0) {
+            return;
+        }
+
         let city = this.state.city;
         let surface = this.state.surface;
         let selectedOptions = [];
@@ -109,7 +118,10 @@ export class Form extends Component {
                 selectedOptions.push(checkbox);
             });
 
-        this.RequestQuotation(city, selectedOptions, surface);
+        await this.RequestQuotation(city, selectedOptions, surface);
+
+
+        this.props.setPage("Quotation")
     }
 
     async RequestQuotation(city, selectedOptions, surface) {
@@ -121,7 +133,7 @@ export class Form extends Component {
         await axios.get('/offer', {
             params: params
         }).then(result => {
-            console.log(result.data);
+            this.props.setQoutation(result.data);
         });
     }
 
@@ -161,7 +173,7 @@ export class Form extends Component {
                         </select>
                     </p>
                     <p><label>Surface to clean: </label>
-                        <input type="text" value={this.state.surface} onChange={this.surfaceChange} />
+                        <input type="number" value={this.state.surface} onChange={this.surfaceChange} />
                     </p>
                     <p><label>Select options: </label></p>
                     {this.createCheckboxlist()}
@@ -171,8 +183,6 @@ export class Form extends Component {
                     </div>
                 </form>
             </div>
-
-
         );
     }
 
