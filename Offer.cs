@@ -37,7 +37,7 @@ namespace OffertService.Controllers
 
         public Offer(string city, int surface, string[] options)
         {
-            this.City = city; ;
+            this.City = city;
             this.SurfaceToClean = surface;
             SelectedOptions = options;
 
@@ -55,7 +55,7 @@ namespace OffertService.Controllers
 
             Options = new Dictionary<string, int>();
 
-            foreach(string value in SelectedOptions)
+            foreach (string value in SelectedOptions)
             {
                 Options.Add(value, data.Options[value]);
             }
