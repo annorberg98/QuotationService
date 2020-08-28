@@ -7,11 +7,11 @@ export class Form extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            availableCities: [],
             city: "",
             surface: "",
             unitPrice: null,
-            isLoading: false,
-            error: 0,
+            error: null,
             dataRecieved: false,
             checkboxes: [],
         };
@@ -22,8 +22,25 @@ export class Form extends Component {
         this.createCheckboxlist = this.createCheckboxlist.bind(this);
         this.onFormSubmit = this.onFormSubmit.bind(this);
         this.surfaceChange = this.surfaceChange.bind(this);
+        this.createSelectOption = this.createSelectOption.bind(this);
+        this.renderCityOptions = this.renderCityOptions.bind(this);
     }
 
+    componentWillMount() {
+        this.getCities();
+    }
+
+    //Requests the available cities from backend
+    async getCities() {
+        await axios.get('/city').then(result => {
+            this.setState({
+                availableCities: result.data
+            });
+        });
+        console.log(this.state.availableCities);
+    }
+
+    //Handler for selecting checkboxes
     handleCheckboxChange = changeEvent => {
         const { name } = changeEvent.target;
 
@@ -35,6 +52,19 @@ export class Form extends Component {
         }));
     };
 
+    //Creates singel option in dropdown
+    createSelectOption(city) {
+        return (
+            <option key={city} value={city}>{city}</option>
+        );
+    }
+
+    //Renders items in city dropdown
+    renderCityOptions() {
+        return (this.state.availableCities.map(this.createSelectOption));
+    }
+
+    //Renders a checkbox
     createCheckbox(option) {
         return (
             <OptionsCheckbox
@@ -46,26 +76,29 @@ export class Form extends Component {
         );
     }
 
+    //Renders the list of checkboxes
     createCheckboxlist = () => {
         return this.state.options.map(this.createCheckbox);
     }
 
+    //Handler for selecting City
     cityChange(event) {
         this.setState({ city: event.target.value });
 
-        this.populatePriceData(event.target.value);
+        this.getCityPriceData(event.target.value);
     }
 
+    //Handler for entering surface to clean
     surfaceChange(event) {
-        if (Number(event.target.value)) {
-            this.setState(prevState => ({
-                error: prevState.error + 1
-            }));
+        const reg = /^[0-9\b]+$/;
+
+        if (event.target.value === '' || reg.test(event.target.value)) {
+            this.setState({ surface: event.target.value });
         }
-        this.setState({ surface: event.target.value });
     }
 
-    async populatePriceData(city) {
+    //Sends request to the backend with the City selected
+    async getCityPriceData(city) {
         this.setState({ isLoading: true });
 
         if (city === "DEFAULT") {
@@ -86,7 +119,6 @@ export class Form extends Component {
 
             this.setState({
                 unitPrice: result.data,
-                isLoading: false,
                 dataRecieved: true,
                 checkboxes: boxes,
                 options: availableOptions
@@ -94,11 +126,11 @@ export class Form extends Component {
         }
         ).catch(error => this.setState({
             error,
-            isLoading: false,
             dataRecieved: false,
         }));
     }
 
+    //Submits the form and sends all data to backend, recieving a Quotation object
     async onFormSubmit(event) {
         event.preventDefault();
 
@@ -118,10 +150,10 @@ export class Form extends Component {
 
         await this.RequestQuotation(city, selectedOptions, surface);
 
-
         this.props.setPage("Quotation")
     }
 
+    // Sends the request to backend
     async RequestQuotation(city, selectedOptions, surface) {
         const params = new URLSearchParams();
         params.append('city', city);
@@ -135,6 +167,7 @@ export class Form extends Component {
         });
     }
 
+    //Renders the first form
     renderCityForm() {
         return (
             <div>
@@ -144,8 +177,7 @@ export class Form extends Component {
                     <p><label>City: </label>
                         <select value={this.state.city} onChange={this.cityChange}>
                             <option value="DEFAULT" default>Select City</option>
-                            <option value="Stockholm">Stockholm</option>
-                            <option value="Uppsala">Uppsala</option>
+                            {this.renderCityOptions()}
                         </select>
                     </p>
                 </form>
@@ -153,6 +185,7 @@ export class Form extends Component {
         );
     }
 
+    //Renders the full form containing data from backend
     renderFullForm() {
         return (
             <div>
@@ -169,11 +202,11 @@ export class Form extends Component {
                     <p><label>Surface to clean (m<sup>2</sup>): </label>
                         <input type="number" value={this.state.surface} onChange={this.surfaceChange} />
                     </p>
-                    <p><label>Select options: </label></p>
+                    <p><label>Select aditional options options: </label></p>
                     {this.createCheckboxlist()}
 
                     <div>
-                        <Button variant="success" onClick={this.onFormSubmit}>Request quotation</Button>{''}
+                        <Button variant="success" onClick={this.onFormSubmit} disabled={this.state.surface.length < 1}>Request quotation</Button>{''}
                     </div>
                 </form>
             </div>

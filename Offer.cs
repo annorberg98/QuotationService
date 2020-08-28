@@ -44,6 +44,9 @@ namespace OffertService.Controllers
             GenerateQuotation();
         }
 
+        /// <summary>
+        /// Reads the data of the City selected by the user
+        /// </summary>
         private void GenerateQuotation()
         {
             data = FileReader.ReadFile().Find(item => item.Name == this.City);
@@ -54,13 +57,16 @@ namespace OffertService.Controllers
 
             foreach(string value in SelectedOptions)
             {
-                Console.WriteLine(data.Options[value]);
                 Options.Add(value, data.Options[value]);
             }
 
             TotalPrice = this.CalculateTotalCost();
         }
 
+        /// <summary>
+        /// Calculates to total price
+        /// </summary>
+        /// <returns></returns>
         private int CalculateTotalCost()
         {
             int totalSurfacePrice;

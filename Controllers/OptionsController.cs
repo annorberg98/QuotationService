@@ -12,10 +12,19 @@ namespace OffertService.Controllers
     [Route("[controller]")]
     public class OptionsController : Controller
     {
+        /// <summary>
+        /// Dictionary containg City-data
+        /// </summary>
         private Dictionary<string, City> cities;
 
+        /// <summary>
+        /// Data loaded file
+        /// </summary>
         private List<Item> data;
 
+        /// <summary>
+        /// Reads data from the data-file and creates object representing the data
+        /// </summary>
         private void GenerateCityData()
         {
             this.data = FileReader.ReadFile();
@@ -37,6 +46,7 @@ namespace OffertService.Controllers
             GenerateCityData();
         }
 
+
         private bool ValidateRequest(string param)
         {
             if (this.cities.ContainsKey(param))
@@ -50,12 +60,14 @@ namespace OffertService.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public IActionResult Get()
         {
+            //Sets the City recieved from the client
             string city = null;
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["city"]))
                 city = HttpContext.Request.Query["city"];
             else
                 return BadRequest();
 
+            //Validates the request and sends response to client
             if (ValidateRequest(city))
             {
                 JsonSerializer serializer = new JsonSerializer();

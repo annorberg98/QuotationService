@@ -13,11 +13,19 @@ namespace OffertService.Controllers
     [Route("[controller]")]
     public class OfferController : Controller
     {
-
+        /// <summary>
+        /// Stores data read from file
+        /// </summary>
         private List<Item> data;
 
+        /// <summary>
+        /// Conatins the options selected by the user
+        /// </summary>
         public string[] SelectedOptions;
 
+        /// <summary>
+        /// Reads the data from the file
+        /// </summary>
         private void GenerateCityData()
         {
             data = FileReader.ReadFile();
@@ -40,11 +48,13 @@ namespace OffertService.Controllers
             //3 is the max amount of options available
             string options = string.Empty;
 
+            // Sets the City parameter recieved from the client
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["city"]))
                 city = HttpContext.Request.Query["city"];
             else
                 return BadRequest();
 
+            // Sets the Surface paramete recieved from the client
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["surface"]))
             {
                 try
@@ -59,6 +69,7 @@ namespace OffertService.Controllers
             else
                 return BadRequest();
 
+            //Sets the options selected by user
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["options"]))
             {
                 options = HttpContext.Request.Query["options"].ToString();
@@ -70,7 +81,6 @@ namespace OffertService.Controllers
             else
             {
                 SelectedOptions = null;
-                Console.WriteLine("options is null");
             }
             return Ok(new Offer(city, surface, SelectedOptions));
         }

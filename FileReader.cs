@@ -20,6 +20,19 @@ namespace OffertService
                 return items;
             }
         }
+
+        public static string[] GetCities()
+        {
+            List<Item> items = ReadFile();
+            string[] cities = new string[items.Count];
+
+            for(int i = 0; i < items.Count; i++)
+            {
+                cities[i] = items[i].Name;
+            }
+
+            return cities;
+        }
     }
 
     public class Item
