@@ -8,9 +8,22 @@ namespace OffertService.Controllers
 {
     public class Offer
     {
+        private string[] selectedoptions;
+
         public string City { get; set; }
 
-        public string[] SelectedOptions { get; set; }
+        public string[] SelectedOptions
+        {
+            get { return this.selectedoptions; }
+            set
+            {
+                if (value == null)
+                    selectedoptions = new string[0];
+                else
+                    selectedoptions = value;
+
+            }
+        }
 
         public int SurfaceToClean { get; set; }
 
@@ -41,8 +54,8 @@ namespace OffertService.Controllers
             totalSurfacePrice = SurfaceToClean * data.UnitPrice;
 
             int totalOptionsPrice = 0;
-            
-            foreach(string value in this.SelectedOptions)
+
+            foreach (string value in this.SelectedOptions)
             {
                 totalOptionsPrice += data.Options[value];
             }

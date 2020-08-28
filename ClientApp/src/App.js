@@ -1,10 +1,8 @@
 import React, { Component } from 'react';
 import { Route } from 'react-router';
 import { Layout } from './components/Layout';
-import { Home } from './components/Home';
-import { FetchData } from './components/FetchData';
-import { Counter } from './components/Counter';
 import { Form } from './components/Form';
+import { Quotation } from './components/Quotation';
 
 import './custom.css'
 import { Container } from 'reactstrap';
@@ -12,14 +10,16 @@ import { Container } from 'reactstrap';
 export default class App extends Component {
   static displayName = App.name;
 
-    render() {
-        console.log(React.version)
-      return (
-          <div>
-              <Container>
-                  <Form />
-              </Container>
-          </div>
+  render() {
+    return (
+      <div>
+
+
+        <Layout>
+          <Route exact='/' component={Form} />
+          <Route exact path='/quotation' component={Quotation} />
+        </Layout>
+      </div>
       /*<Layout>
         <Route exact path='/' component={Home} />
         <Route path='/counter' component={Counter} />

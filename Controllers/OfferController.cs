@@ -42,7 +42,7 @@ namespace OffertService.Controllers
             cities.Add(StockHolm.Name, StockHolm);*/
         }
 
-        
+
         public OfferController()
         {
             GenerateCityData();
@@ -70,25 +70,28 @@ namespace OffertService.Controllers
                 {
                     surface = Convert.ToInt32(HttpContext.Request.Query["surface"]);
                 }
-                catch (Exception e)
+                catch
                 {
                     return BadRequest();
                 }
-            } else
+            }
+            else
                 return BadRequest();
 
             if (!String.IsNullOrEmpty(HttpContext.Request.Query["options"]))
+            {
                 options = HttpContext.Request.Query["options"].ToString();
+                if (options == "[]")
+                    SelectedOptions = null;
+                else
+                    SelectedOptions = options.Replace("\"", "").Replace("[", "").Replace("]", "").Split(",");
+            }
             else
             {
+                SelectedOptions = null;
                 Console.WriteLine("options is null");
             }
-
-            SelectedOptions = options.Replace("\"", "").Replace("[","").Replace("]","").Split(",");
-
             return Ok(new Offer(city, surface, SelectedOptions));
-
-
         }
     }
 }
