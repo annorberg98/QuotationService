@@ -12,6 +12,8 @@ namespace OffertService.Controllers
 
         public string City { get; set; }
 
+        public Dictionary<string, int> Options { get; set; }
+
         public string[] SelectedOptions
         {
             get { return this.selectedoptions; }
@@ -29,6 +31,8 @@ namespace OffertService.Controllers
 
         public int TotalPrice { get; set; }
 
+        public int SurfaceUnitPrice { get; set; }
+
         private Item data;
 
         public Offer(string city, int surface, string[] options)
@@ -43,6 +47,16 @@ namespace OffertService.Controllers
         private void GenerateQuotation()
         {
             data = FileReader.ReadFile().Find(item => item.Name == this.City);
+
+            this.SurfaceUnitPrice = data.UnitPrice;
+
+            Options = new Dictionary<string, int>();
+
+            foreach(string value in SelectedOptions)
+            {
+                Console.WriteLine(data.Options[value]);
+                Options.Add(value, data.Options[value]);
+            }
 
             TotalPrice = this.CalculateTotalCost();
         }

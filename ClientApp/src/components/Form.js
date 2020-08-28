@@ -4,8 +4,6 @@ import axios from 'axios';
 import OptionsCheckbox from './OptionCheckbox';
 
 export class Form extends Component {
-    static displayName = "Form";
-
     constructor(props) {
         super(props);
         this.state = {
@@ -140,9 +138,7 @@ export class Form extends Component {
     renderCityForm() {
         return (
             <div>
-                <h1>Form</h1>
-
-                <p>This is a simple example of a React component.</p>
+                <h1>Request quotation</h1>
 
                 <form>
                     <p><label>City: </label>
@@ -160,9 +156,7 @@ export class Form extends Component {
     renderFullForm() {
         return (
             <div>
-                <h1>Form</h1>
-
-                <p>This is a simple example of a React component.</p>
+                <h1>Request quotation</h1>
 
                 <form>
                     <p><label>City: </label>
@@ -172,7 +166,7 @@ export class Form extends Component {
                             <option value="Uppsala">Uppsala</option>
                         </select>
                     </p>
-                    <p><label>Surface to clean: </label>
+                    <p><label>Surface to clean (m<sup>2</sup>): </label>
                         <input type="number" value={this.state.surface} onChange={this.surfaceChange} />
                     </p>
                     <p><label>Select options: </label></p>

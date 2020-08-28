@@ -14,27 +14,22 @@ namespace OffertService.Controllers
     {
         private Dictionary<string, City> cities;
 
+        private List<Item> data;
+
         private void GenerateCityData()
-        {   
-            //This would usually come from a database
-            Dictionary<string, int> stockPrices = new Dictionary<string, int>();
-            stockPrices.Add("Fönsterputs", 300);
-            stockPrices.Add("Balkongstädning", 150);
+        {
+            this.data = FileReader.ReadFile();
+            this.cities = new Dictionary<string, City>();
+            foreach(Item item in data)
+            {
+                Dictionary<string, int> prices = new Dictionary<string, int>();
+                foreach (KeyValuePair<string, int> entry in item.Options)
+                {
+                    prices.Add(entry.Key, entry.Value);
+                }
 
-            City StockHolm = new City("stockholm", 65, stockPrices);
-
-            Dictionary<string, int> uppsalaPrices = new Dictionary<string, int>();
-            uppsalaPrices.Add("Fönsterputs", 300);
-            uppsalaPrices.Add("Bortforsling av skräp", 400);
-            uppsalaPrices.Add("Balkongstädning", 150);
-
-            City Uppsala = new City("uppsala", 50, uppsalaPrices);
-
-            cities = new Dictionary<string, City>();
-            cities.Add(Uppsala.Name ,Uppsala);
-            cities.Add(StockHolm.Name, StockHolm);
-
-            Console.WriteLine(cities.Keys);
+                cities.Add(item.Name.ToLower(), new City(item.Name, item.UnitPrice, prices));
+            }
         }
 
         public OptionsController()
@@ -61,7 +56,6 @@ namespace OffertService.Controllers
             else
                 return BadRequest();
 
-            Console.WriteLine(city);
             if (ValidateRequest(city))
             {
                 JsonSerializer serializer = new JsonSerializer();
